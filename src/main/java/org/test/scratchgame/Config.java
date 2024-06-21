@@ -2,10 +2,13 @@ package org.test.scratchgame;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.List;
 import java.util.Map;
 
 @Data
+@Accessors(chain = true)
 public class Config {
     private Integer columns; //optional
     private Integer rows; //optional
@@ -13,6 +16,7 @@ public class Config {
     private Probability probabilities;
 
     @Data
+    @Accessors(chain = true)
     public static class Symbol {
         private String symbol;
         @SerializedName("reward_multiplier")
@@ -23,6 +27,7 @@ public class Config {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Probability {
         @SerializedName("standard_symbols")
         private List<Standard> standard;
@@ -31,6 +36,7 @@ public class Config {
         private Bonus bonus;
 
         @Data
+        @Accessors(chain = true)
         public static class Standard {
             private int column;
             private int row;
@@ -39,6 +45,7 @@ public class Config {
         }
 
         @Data
+        @Accessors(chain = true)
         public static class Bonus {
             @SerializedName("symbols")
             private Map<String, Integer> bySymbol;

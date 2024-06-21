@@ -35,7 +35,7 @@ public class MatrixGenerator {
     //based on output format I assume that only one bonus symbol is allowed
     private String generateRandomSymbol(int row, int column) {
         final var standardProbabilities = getCellStandardProbabilities(row, column);
-        if (bonusPlaced) {
+        if (bonusPlaced || config.getProbabilities().getBonus() == null) {
             return generateRandomSymbol(standardProbabilities);
         }
 
@@ -49,16 +49,17 @@ public class MatrixGenerator {
         return generatedSymbol;
     }
 
-
     private String generateRandomSymbol(Map<String, Integer> probabilities) {
-        int totalWeight = probabilities.values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .sum();
-
-        //TODO map to probability line
-
-        return "";
+        final var weightedDistribution = new HashMap<Integer, String>();
+        int totalWeight = 0;
+        for (Map.Entry<String, Integer> probabilityEntry : probabilities.entrySet()) {
+            for (int i = 0; i < probabilityEntry.getValue(); i++) {
+                weightedDistribution.put(totalWeight, probabilityEntry.getKey());
+                totalWeight++;
+            }
+        }
+        var nextInt = random.nextInt(totalWeight);
+        return weightedDistribution.get(nextInt);
     }
 
     private Map<String, Integer> getCellStandardProbabilities(int row, int column) {
@@ -75,6 +76,5 @@ public class MatrixGenerator {
                 .map(Config.Probability.Standard::getBySymbol)
                 .orElseThrow();
     }
-
 
 }
