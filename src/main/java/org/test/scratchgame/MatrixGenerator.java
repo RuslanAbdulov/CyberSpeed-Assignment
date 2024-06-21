@@ -3,6 +3,8 @@ package org.test.scratchgame;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 
 public class MatrixGenerator {
@@ -49,16 +51,17 @@ public class MatrixGenerator {
         return generatedSymbol;
     }
 
+    //stable order to make results repeatable
     private String generateRandomSymbol(Map<String, Integer> probabilities) {
         final var weightedDistribution = new HashMap<Integer, String>();
-        int totalWeight = 0;
-        for (Map.Entry<String, Integer> probabilityEntry : probabilities.entrySet()) {
-            for (int i = 0; i < probabilityEntry.getValue(); i++) {
-                weightedDistribution.put(totalWeight, probabilityEntry.getKey());
-                totalWeight++;
-            }
-        }
-        var nextInt = random.nextInt(totalWeight);
+        AtomicInteger totalWeight = new AtomicInteger(0);
+        probabilities.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEachOrdered(entry -> IntStream.range(0, entry.getValue())
+                        .forEach(i -> weightedDistribution.put(totalWeight.getAndIncrement(), entry.getKey()))
+                );
+
+        var nextInt = random.nextInt(totalWeight.get());
         return weightedDistribution.get(nextInt);
     }
 

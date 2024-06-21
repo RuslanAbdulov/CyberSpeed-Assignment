@@ -58,4 +58,31 @@ class MatrixGeneratorTest {
         assertTrue(Arrays.deepEquals(expected, matrix));
     }
 
+    @Test
+    void generateMatrix_withBonus() {
+        var config = new Config()
+                .setRows(2)
+                .setColumns(3)
+                .setProbabilities(
+                        new Config.Probability()
+                                .setStandard(List.of(
+                                                new Config.Probability.Standard()
+                                                        .setRow(0)
+                                                        .setColumn(0)
+                                                        .setBySymbol(Map.of("A", 1, "B", 2, "C", 3))
+                                        )
+
+                                )
+                                .setBonus(new Config.Probability.Bonus()
+                                        .setBySymbol(Map.of("10x", 1, "5x", 2))
+                                )
+                );
+        long seed = 2L;
+
+        var matrix = new MatrixGenerator(config, seed).generate();
+
+        var expected = new String[][]{{"B", "C", "5x"}, {"B", "C", "A"}};
+        assertTrue(Arrays.deepEquals(expected, matrix));
+    }
+
 }
