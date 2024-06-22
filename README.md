@@ -3,7 +3,7 @@
 ```bash
  mvn package
 ```
-
+requires JDK 17
 
 ### Run
 
