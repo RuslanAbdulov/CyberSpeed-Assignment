@@ -114,7 +114,7 @@ public class RewardCalculator {
     private static List<String> getSameSymbolCombinationAppliedToSymbols(Config.WinCombination winCombination,
                                                                          Map<String, Integer> symbolCount) {
         return symbolCount.entrySet().stream()
-                .filter(entry -> entry.getValue().compareTo(winCombination.getCount()) > 0)
+                .filter(entry -> entry.getValue().compareTo(winCombination.getCount()) >= 0)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
