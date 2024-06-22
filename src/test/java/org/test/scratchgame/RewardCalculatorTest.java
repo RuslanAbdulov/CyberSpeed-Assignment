@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class RewardCalculatorTest {
@@ -109,6 +106,29 @@ class RewardCalculatorTest {
         assertEquals(2, combinations.size());
         assertTrue(combinations.contains("same_symbol_5_times"));
         assertTrue(combinations.contains("same_symbols_vertically") || combinations.contains("same_symbols_horizontally"));
+    }
+
+    @Test
+    void calculate_sameSymbolsCountMoreThanMaxCombination() {
+        String[][] gameMatrix = new String[][] {
+                {"A", "A", "A"},
+                {"A", "A", "C"},
+                {"A", "B", "B"}};
+
+        var config = prepareConfig();
+
+        var gameResult = new RewardCalculator(config).calculate(gameMatrix, 100);
+
+        assertEquals(50000, gameResult.getReward());
+        assertNull(gameResult.getAppliedBonusSymbol());
+        assertEquals(1, gameResult.getAppliedWinningCombinations().size());
+
+        var combinations = gameResult.getAppliedWinningCombinations().get("A");
+        assertNotNull(combinations);
+        assertEquals(4, combinations.size());
+        assertTrue(combinations.contains("same_symbol_5_times"));
+        assertFalse(combinations.contains("same_symbol_4_times"));
+        assertFalse(combinations.contains("same_symbol_3_times"));
     }
 
     private Config prepareConfig() {

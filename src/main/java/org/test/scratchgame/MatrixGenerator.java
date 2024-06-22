@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-
 public class MatrixGenerator {
     private final Random random;
     private final Config config;
@@ -42,9 +41,9 @@ public class MatrixGenerator {
         }
 
         final var bonusProbabilities = config.getProbabilities().getBonus().getBySymbol();
-        final var unitedProbabilities = new HashMap<>(standardProbabilities);
-        unitedProbabilities.putAll(bonusProbabilities);
-        final var generatedSymbol = generateRandomSymbol(unitedProbabilities);
+        final var combinedProbabilities = new HashMap<>(standardProbabilities);
+        combinedProbabilities.putAll(bonusProbabilities);
+        final var generatedSymbol = generateRandomSymbol(combinedProbabilities);
         if (bonusProbabilities.containsKey(generatedSymbol)) {
             bonusPlaced = true;
         }

@@ -16,7 +16,6 @@ public class RewardCalculator {
         this.config = config;
     }
 
-    //Chain of Responsibility / Decorator / Strategy ?
     public GameResult calculate(String[][] gameMatrix, double bettingAmount) {
         //optimization to scan gameMatrix only once for all same symbol combinations
         var symbolCount = countSymbols(gameMatrix);
@@ -86,7 +85,8 @@ public class RewardCalculator {
 
     private List<String> leaveHighestCombinationPerGroup(List<String> winCombinations) {
         var groupedWinCombinations = winCombinations.stream()
-                .collect(Collectors.groupingBy(combination -> config.getWinCombinations().get(combination).getGroup()));
+                .collect(Collectors.groupingBy(combination ->
+                        config.getWinCombinations().get(combination).getGroup()));
         groupedWinCombinations.values().forEach(value ->
                 value.sort(Comparator.comparing(combination ->
                                 config.getWinCombinations().get(combination).getRewardMultiplier())
@@ -111,10 +111,10 @@ public class RewardCalculator {
         return List.of();
     }
 
-    private static List<String> getSameSymbolCombinationAppliedToSymbols(
-            Config.WinCombination winCombination, Map<String, Integer> symbolCount) {
+    private static List<String> getSameSymbolCombinationAppliedToSymbols(Config.WinCombination winCombination,
+                                                                         Map<String, Integer> symbolCount) {
         return symbolCount.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(winCombination.getCount()))
+                .filter(entry -> entry.getValue().compareTo(winCombination.getCount()) > 0)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
